@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Thư Mời Cưới - Thành Chương & Anh Thư</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="invite">
+
+    <!-- Header -->
+    <header class="section hero">
+      <p class="eyebrow">Mời Bạn Tới Đám Cưới Của Tụi Mình</p>
+      <h1 class="couple-names script">Thành Chương &amp; Anh Thư</h1>
+      <div class="glyph">囍</div>
+      <p class="day-label">Chủ Nhật</p>
+      <p class="big-date">19.01.2025</p>
+
+      <div class="framed-photo tall">
+        <img src="images/photo01.webp" alt="Thành Chương & Anh Thư">
+      </div>
+    </header>
+
+    <!-- Family -->
+    <section class="section family">
+      <div class="glyph small">囍</div>
+      <div class="family-grid">
+        <div>
+          <p class="family-title">Ba Mẹ Chú Rể</p>
+          <p class="family-name">Ba Nguyễn Hồng Lĩnh (Cố Phụ)</p>
+          <p class="family-name">Mẹ Võ Thị Đậm</p>
+        </div>
+        <div>
+          <p class="family-title">Ba Mẹ Cô Dâu</p>
+          <p class="family-name">Ba Nguyễn Thanh Huyền</p>
+          <p class="family-name">Mẹ Nguyễn Thị Út</p>
+        </div>
+      </div>
+
+      <p class="announce">Trân Trọng Báo Tin Lễ Tân Hôn Của</p>
+      <h2 class="couple-names script small">Thành Chương<br>&amp;<br>Anh Thư</h2>
+
+      <div class="framed-photo medium">
+        <img src="images/photo02.webp" alt="Thành Chương & Anh Thư">
+      </div>
+    </section>
+
+    <!-- Invitation + event -->
+    <section class="section event">
+      <div class="divider"><span>Trân Trọng Kính Mời</span></div>
+
+      <div class="thumb-row">
+        <div class="thumb"><img src="images/photo04.webp" alt=""></div>
+        <div class="thumb"><img src="images/photo03.webp" alt=""></div>
+        <div class="thumb"><img src="images/photo01.webp" alt=""></div>
+      </div>
+
+      <h3 class="event-title script">Lễ Tân Hôn</h3>
+      <p class="event-sub">Mời bạn tham dự tiệc mừng vào lúc</p>
+
+      <div class="date-block">
+        <div class="date-col">
+          <p>Chủ Nhật</p>
+          <p class="time">13 giờ 00</p>
+        </div>
+        <div class="date-col big">
+          <p class="day-number">19</p>
+          <p class="month">Tháng 01</p>
+        </div>
+        <div class="date-col">
+          <p>&nbsp;</p>
+          <p class="time">Năm 2025</p>
+        </div>
+      </div>
+      <p class="lunar">(Tức Ngày 20 Tháng 12 Năm Giáp Thìn)</p>
+      <p class="venue-note">Tại Tư Gia Nhà Trai</p>
+
+      <p class="section-label">Địa Điểm Tổ Chức</p>
+      <div class="venue-box">
+        <p class="venue-name">Tư Gia Nhà Trai</p>
+        <p class="venue-address">Ấp Vĩnh Hoà, Xã Hựu Thành,<br>Huyện Trà Ôn, Tỉnh Vĩnh Long</p>
+        <a class="btn-direction" target="_blank" rel="noopener"
+           href="https://www.google.com/maps/search/?api=1&query=%C4%90%C6%B0%E1%BB%9Dng%20V%C4%A9nh%20Ho%C3%A0%2C%20X%C3%A3%20H%E1%BB%B1u%20Th%C3%A0nh%2C%20Huy%E1%BB%87n%20Tr%C3%A0%20%C3%94n%2C%20T%E1%BB%89nh%20V%C4%A9nh%20Long">
+          Xem Chỉ Đường
+        </a>
+      </div>
+
+      <div class="calendar" id="calendar"></div>
+    </section>
+
+    <!-- RSVP -->
+    <section class="section rsvp">
+      <p class="rsvp-intro">Hãy dành ít phút để xác nhận tham dự và gửi lời chúc tới<br>cô dâu và chú rể ạ ^^</p>
+
+      <div class="rsvp-box">
+        <!--
+          Cấu hình: dán link nhúng Google Form vào biến GOOGLE_FORM_EMBED_URL
+          trong file script.js. Form nên có các câu hỏi theo đúng thứ tự:
+          1) Tên của bạn là?
+          2) Bạn là gì của Dâu Rể?
+          3) Gửi lời chúc đến Dâu Rể nhé!
+          4) Bạn Có Tham Dự Không? (Có thể tham dự / Không thể tham dự)
+          5) Số điện thoại của bạn là?
+          6) Bạn ở quận mấy nhỉ?
+        -->
+        <div id="rsvp-form-container">
+          <p class="rsvp-placeholder">Form xác nhận tham dự sẽ hiển thị ở đây.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Gallery -->
+    <section class="section gallery">
+      <div class="divider"><span>Album Hình Cưới Của Tụi Mình Nè</span></div>
+      <div class="gallery-grid">
+        <img src="images/photo05.jpg" alt="">
+        <img src="images/photo06.jpg" alt="">
+        <img src="images/photo07.jpg" alt="">
+        <img src="images/photo08.jpg" alt="">
+        <img src="images/photo09.jpg" alt="">
+        <img src="images/photo10.jpg" alt="">
+        <img src="images/photo13.webp" alt="">
+        <img src="images/photo14.jpg" alt="">
+        <img src="images/photo11.jpg" alt="">
+        <img src="images/photo12.webp" alt="">
+        <img src="images/photo15.jpg" alt="">
+        <img src="images/photo18.jpg" alt="">
+        <img src="images/photo16.jpg" alt="">
+        <img src="images/photo19.jpg" alt="">
+        <img src="images/photo17.webp" alt="">
+        <img src="images/logo.jpg" alt="">
+      </div>
+    </section>
+
+    <!-- Thank you -->
+    <section class="section thanks">
+      <div class="thanks-photo">
+        <img src="images/photo01.webp" alt="Thành Chương & Anh Thư">
+        <div class="thanks-overlay">
+          <p class="thanks-script script">thank you</p>
+          <p class="thanks-text">Cảm ơn bạn rất nhiều!<br>Tụi mình háo hức gặp lại bạn ở buổi tiệc mừng ^^</p>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+<script src="script.js"></script>
+</body>
+</html>
