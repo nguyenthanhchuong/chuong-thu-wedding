@@ -65,31 +65,78 @@ const GALLERY_IMAGES = [
   "images/photo17.webp"
 ];
 
-function loadImageRatio(src) {
+function loadImageInfo(src) {
   return new Promise(resolve => {
     const img = new Image();
-    img.onload = () => resolve(img.naturalHeight / img.naturalWidth || 1);
-    img.onerror = () => resolve(1);
+    img.onload = () => resolve({ src, ratio: (img.naturalHeight / img.naturalWidth) || 1 });
+    img.onerror = () => resolve({ src, ratio: 1 });
     img.src = src;
   });
 }
 
-async function renderGallery() {
-  const cols = [document.getElementById("gallery-col-0"), document.getElementById("gallery-col-1")];
-  if (!cols[0] || !cols[1]) return;
+function makeRevealImg(src) {
+  const img = document.createElement("img");
+  img.src = src;
+  img.alt = "";
+  img.className = "reveal";
+  return img;
+}
 
-  const ratios = await Promise.all(GALLERY_IMAGES.map(loadImageRatio));
-  const colHeights = [0, 0];
+// Ảnh ngang (ratio thấp) hiển thị full-width để tạo nhịp điệu, tránh dàn đều đơn điệu.
+// Cụm ảnh dọc liên tiếp được xếp masonry 2 cột cân theo chiều cao thật (không còn khoảng trống).
+function appendFullWidth(container, item) {
+  const wrap = document.createElement("div");
+  wrap.className = "gallery-full";
+  wrap.appendChild(makeRevealImg(item.src));
+  container.appendChild(wrap);
+}
 
-  GALLERY_IMAGES.forEach((src, i) => {
-    const target = colHeights[0] <= colHeights[1] ? 0 : 1;
-    const img = document.createElement("img");
-    img.src = src;
-    img.alt = "";
-    img.className = "reveal";
-    cols[target].appendChild(img);
-    colHeights[target] += ratios[i];
+function appendMasonryBucket(container, items) {
+  const wrap = document.createElement("div");
+  wrap.className = "gallery-masonry";
+  const col0 = document.createElement("div");
+  const col1 = document.createElement("div");
+  col0.className = "gallery-col";
+  col1.className = "gallery-col";
+  wrap.appendChild(col0);
+  wrap.appendChild(col1);
+
+  const heights = [0, 0];
+  items.forEach(item => {
+    const target = heights[0] <= heights[1] ? 0 : 1;
+    (target === 0 ? col0 : col1).appendChild(makeRevealImg(item.src));
+    heights[target] += item.ratio;
   });
+
+  container.appendChild(wrap);
+}
+
+async function renderGallery() {
+  const container = document.getElementById("gallery-grid");
+  if (!container) return;
+
+  const items = await Promise.all(GALLERY_IMAGES.map(loadImageInfo));
+
+  let buffer = [];
+  const flush = () => {
+    if (buffer.length === 1) {
+      appendFullWidth(container, buffer[0]);
+    } else if (buffer.length > 1) {
+      appendMasonryBucket(container, buffer);
+    }
+    buffer = [];
+  };
+
+  items.forEach(item => {
+    const isLandscape = item.ratio < 0.9;
+    if (isLandscape) {
+      flush();
+      appendFullWidth(container, item);
+    } else {
+      buffer.push(item);
+    }
+  });
+  flush();
 
   initScrollReveal();
 }
