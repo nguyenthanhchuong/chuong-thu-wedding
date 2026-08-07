@@ -107,6 +107,9 @@ function buildRows(items) {
 // Mỗi ảnh nhận flex-grow tỉ lệ với ar, flex-basis 0 => bề ngang chia đúng
 // theo tỉ lệ ar, nên mọi ảnh trong hàng có cùng chiều cao và hàng lấp trọn
 // bề ngang. Không thể dư khoảng trống, đồng thời tự co giãn theo màn hình.
+// Nhân 10: khi tổng flex-grow của hàng nhỏ hơn 1 (vd hàng chỉ có 1 ảnh dọc,
+// ar ~0.67) thì CSS chỉ cho giãn theo đúng phần đó và ảnh không lấp hết
+// bề ngang. Nhân lên giữ nguyên tỉ lệ nhưng đảm bảo tổng luôn lớn hơn 1.
 function renderRow(container, items) {
   const row = document.createElement("div");
   row.className = "gallery-row";
@@ -116,7 +119,7 @@ function renderRow(container, items) {
     img.src = item.src;
     img.alt = "";
     img.className = "reveal";
-    img.style.flex = `${item.ar} 1 0`;
+    img.style.flex = `${item.ar * 10} 1 0`;
     row.appendChild(img);
   });
 
