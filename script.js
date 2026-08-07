@@ -46,69 +46,81 @@ function renderRsvpForm() {
   container.innerHTML = `<iframe src="${GOOGLE_FORM_EMBED_URL}" loading="lazy">Đang tải…</iframe>`;
 }
 
-// Album: masonry thật - xếp từng ảnh vào cột đang thấp hơn dựa theo tỉ lệ ảnh thật
+// Thứ tự xếp xen kẽ: cặp ảnh dọc - ảnh ngang - cặp ảnh dọc ...
+// để mọi hàng ra chiều cao xấp xỉ nhau. Ảnh dọc lẻ cuối cùng đứng
+// một mình thành ảnh lớn khép lại album.
 const GALLERY_IMAGES = [
-  "images/photo05.jpg",
-  "images/photo06.jpg",
-  "images/photo07.jpg",
-  "images/photo08.jpg",
-  "images/photo09.jpg",
-  "images/photo10.jpg",
-  "images/photo13.webp",
-  "images/photo14.jpg",
-  "images/photo11.jpg",
-  "images/photo12.webp",
-  "images/photo15.jpg",
-  "images/photo18.jpg",
-  "images/photo16.jpg",
-  "images/photo19.jpg",
-  "images/photo17.webp"
+  "images/photo05.jpg",   // dọc ─┐ cặp
+  "images/photo08.jpg",   // dọc ─┘
+  "images/photo06.jpg",   // ngang
+  "images/photo09.jpg",   // dọc ─┐ cặp
+  "images/photo11.jpg",   // dọc ─┘
+  "images/photo07.jpg",   // ngang
+  "images/photo10.jpg",   // ngang
+  "images/photo12.webp",  // dọc ─┐ cặp
+  "images/photo13.webp",  // dọc ─┘
+  "images/photo15.jpg",   // ngang
+  "images/photo14.jpg",   // dọc ─┐ cặp
+  "images/photo16.jpg",   // dọc ─┘
+  "images/photo18.jpg",   // ngang
+  "images/photo19.jpg",   // ngang
+  "images/photo17.webp"   // dọc - ảnh lớn khép album
 ];
+
+const GALLERY_GAP = 6;          // khớp với gap trong style.css
+const GALLERY_TARGET_ROW_H = 300; // chiều cao mong muốn mỗi hàng (px)
+const GALLERY_NOMINAL_W = 372;    // bề ngang vùng ảnh ở khổ mặc định (px)
 
 function loadImageInfo(src) {
   return new Promise(resolve => {
     const img = new Image();
-    img.onload = () => resolve({ src, ratio: (img.naturalHeight / img.naturalWidth) || 1 });
-    img.onerror = () => resolve({ src, ratio: 1 });
+    // ar = rộng / cao. Ảnh dọc ar < 1, ảnh ngang ar > 1.
+    img.onload = () => resolve({ src, ar: (img.naturalWidth / img.naturalHeight) || 1 });
+    img.onerror = () => resolve({ src, ar: 1 });
     img.src = src;
   });
 }
 
-function makeRevealImg(src) {
-  const img = document.createElement("img");
-  img.src = src;
-  img.alt = "";
-  img.className = "reveal";
-  return img;
-}
+// Gom ảnh thành từng hàng: cộng dồn ảnh cho tới khi chiều cao hàng
+// tụt xuống dưới mức mong muốn thì chốt hàng đó.
+function buildRows(items) {
+  const rows = [];
+  let current = [];
+  let arSum = 0;
 
-// Ảnh ngang (ratio thấp) hiển thị full-width để tạo nhịp điệu, tránh dàn đều đơn điệu.
-// Cụm ảnh dọc liên tiếp được xếp masonry 2 cột cân theo chiều cao thật (không còn khoảng trống).
-function appendFullWidth(container, item) {
-  const wrap = document.createElement("div");
-  wrap.className = "gallery-full";
-  wrap.appendChild(makeRevealImg(item.src));
-  container.appendChild(wrap);
-}
-
-function appendMasonryBucket(container, items) {
-  const wrap = document.createElement("div");
-  wrap.className = "gallery-masonry";
-  const col0 = document.createElement("div");
-  const col1 = document.createElement("div");
-  col0.className = "gallery-col";
-  col1.className = "gallery-col";
-  wrap.appendChild(col0);
-  wrap.appendChild(col1);
-
-  const heights = [0, 0];
   items.forEach(item => {
-    const target = heights[0] <= heights[1] ? 0 : 1;
-    (target === 0 ? col0 : col1).appendChild(makeRevealImg(item.src));
-    heights[target] += item.ratio;
+    current.push(item);
+    arSum += item.ar;
+    const gaps = (current.length - 1) * GALLERY_GAP;
+    const rowHeight = (GALLERY_NOMINAL_W - gaps) / arSum;
+    if (rowHeight <= GALLERY_TARGET_ROW_H) {
+      rows.push(current);
+      current = [];
+      arSum = 0;
+    }
   });
 
-  container.appendChild(wrap);
+  if (current.length) rows.push(current);
+  return rows;
+}
+
+// Mỗi ảnh nhận flex-grow tỉ lệ với ar, flex-basis 0 => bề ngang chia đúng
+// theo tỉ lệ ar, nên mọi ảnh trong hàng có cùng chiều cao và hàng lấp trọn
+// bề ngang. Không thể dư khoảng trống, đồng thời tự co giãn theo màn hình.
+function renderRow(container, items) {
+  const row = document.createElement("div");
+  row.className = "gallery-row";
+
+  items.forEach(item => {
+    const img = document.createElement("img");
+    img.src = item.src;
+    img.alt = "";
+    img.className = "reveal";
+    img.style.flex = `${item.ar} 1 0`;
+    row.appendChild(img);
+  });
+
+  container.appendChild(row);
 }
 
 async function renderGallery() {
@@ -116,27 +128,7 @@ async function renderGallery() {
   if (!container) return;
 
   const items = await Promise.all(GALLERY_IMAGES.map(loadImageInfo));
-
-  let buffer = [];
-  const flush = () => {
-    if (buffer.length === 1) {
-      appendFullWidth(container, buffer[0]);
-    } else if (buffer.length > 1) {
-      appendMasonryBucket(container, buffer);
-    }
-    buffer = [];
-  };
-
-  items.forEach(item => {
-    const isLandscape = item.ratio < 0.9;
-    if (isLandscape) {
-      flush();
-      appendFullWidth(container, item);
-    } else {
-      buffer.push(item);
-    }
-  });
-  flush();
+  buildRows(items).forEach(row => renderRow(container, row));
 
   initScrollReveal();
 }
