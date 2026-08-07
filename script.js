@@ -48,3 +48,42 @@ function renderRsvpForm() {
 
 renderCalendar();
 renderRsvpForm();
+
+// Nhạc nền: Đức Phúc - Ngày Đầu Tiên (phát qua YouTube, không lưu file nhạc)
+const BACKGROUND_SONG_VIDEO_ID = "rIXhXaQ8tiM";
+let ytPlayer = null;
+let musicPlaying = false;
+
+function onYouTubeIframeAPIReady() {
+  ytPlayer = new YT.Player("yt-player", {
+    height: "1",
+    width: "1",
+    videoId: BACKGROUND_SONG_VIDEO_ID,
+    playerVars: {
+      autoplay: 0,
+      controls: 0,
+      loop: 1,
+      playlist: BACKGROUND_SONG_VIDEO_ID
+    },
+    events: {
+      onReady: () => {
+        const btn = document.getElementById("music-toggle");
+        if (btn) btn.disabled = false;
+      }
+    }
+  });
+}
+
+const musicBtn = document.getElementById("music-toggle");
+if (musicBtn) {
+  musicBtn.addEventListener("click", () => {
+    if (!ytPlayer) return;
+    if (musicPlaying) {
+      ytPlayer.pauseVideo();
+    } else {
+      ytPlayer.playVideo();
+    }
+    musicPlaying = !musicPlaying;
+    musicBtn.classList.toggle("playing", musicPlaying);
+  });
+}
