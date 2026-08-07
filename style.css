@@ -312,16 +312,15 @@ body {
 
 .gallery .divider span { font-size: 15px; }
 .gallery-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 6px;
+  columns: 2;
+  column-gap: 6px;
 }
 .gallery-grid img {
   width: 100%;
-  height: 100%;
-  object-fit: cover;
   display: block;
+  margin-bottom: 6px;
   border-radius: 2px;
+  break-inside: avoid;
 }
 
 .thanks { padding: 0; }
@@ -386,4 +385,14 @@ body {
 @keyframes spin {
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
+}
+
+.reveal {
+  opacity: 0;
+  transform: translateY(36px) scale(0.97);
+  transition: opacity 0.8s ease, transform 0.8s ease;
+}
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0) scale(1);
 }

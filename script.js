@@ -49,6 +49,28 @@ function renderRsvpForm() {
 renderCalendar();
 renderRsvpForm();
 
+// Hiệu ứng: ảnh mờ dần + trượt lên khi cuộn tới
+function initScrollReveal() {
+  const targets = document.querySelectorAll(".reveal");
+  if (!("IntersectionObserver" in window)) {
+    targets.forEach(t => t.classList.add("visible"));
+    return;
+  }
+  const observer = new IntersectionObserver(
+    entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("visible");
+          observer.unobserve(entry.target);
+        }
+      });
+    },
+    { threshold: 0.15, rootMargin: "0px 0px -60px 0px" }
+  );
+  targets.forEach(t => observer.observe(t));
+}
+initScrollReveal();
+
 // Nhạc nền: Đức Phúc - Ngày Đầu Tiên (phát qua YouTube, không lưu file nhạc)
 const BACKGROUND_SONG_VIDEO_ID = "AfNbehFKJ7o";
 let ytPlayer = null;
