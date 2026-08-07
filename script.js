@@ -50,7 +50,7 @@ renderCalendar();
 renderRsvpForm();
 
 // Nhạc nền: Đức Phúc - Ngày Đầu Tiên (phát qua YouTube, không lưu file nhạc)
-const BACKGROUND_SONG_VIDEO_ID = "rIXhXaQ8tiM";
+const BACKGROUND_SONG_VIDEO_ID = "AfNbehFKJ7o";
 let ytPlayer = null;
 let musicPlaying = false;
 
