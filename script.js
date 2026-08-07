@@ -46,12 +46,61 @@ function renderRsvpForm() {
   container.innerHTML = `<iframe src="${GOOGLE_FORM_EMBED_URL}" loading="lazy">Đang tải…</iframe>`;
 }
 
+// Album: masonry thật - xếp từng ảnh vào cột đang thấp hơn dựa theo tỉ lệ ảnh thật
+const GALLERY_IMAGES = [
+  "images/photo05.jpg",
+  "images/photo06.jpg",
+  "images/photo07.jpg",
+  "images/photo08.jpg",
+  "images/photo09.jpg",
+  "images/photo10.jpg",
+  "images/photo13.webp",
+  "images/photo14.jpg",
+  "images/photo11.jpg",
+  "images/photo12.webp",
+  "images/photo15.jpg",
+  "images/photo18.jpg",
+  "images/photo16.jpg",
+  "images/photo19.jpg",
+  "images/photo17.webp"
+];
+
+function loadImageRatio(src) {
+  return new Promise(resolve => {
+    const img = new Image();
+    img.onload = () => resolve(img.naturalHeight / img.naturalWidth || 1);
+    img.onerror = () => resolve(1);
+    img.src = src;
+  });
+}
+
+async function renderGallery() {
+  const cols = [document.getElementById("gallery-col-0"), document.getElementById("gallery-col-1")];
+  if (!cols[0] || !cols[1]) return;
+
+  const ratios = await Promise.all(GALLERY_IMAGES.map(loadImageRatio));
+  const colHeights = [0, 0];
+
+  GALLERY_IMAGES.forEach((src, i) => {
+    const target = colHeights[0] <= colHeights[1] ? 0 : 1;
+    const img = document.createElement("img");
+    img.src = src;
+    img.alt = "";
+    img.className = "reveal";
+    cols[target].appendChild(img);
+    colHeights[target] += ratios[i];
+  });
+
+  initScrollReveal();
+}
+
 renderCalendar();
 renderRsvpForm();
+renderGallery();
 
 // Hiệu ứng: ảnh mờ dần + trượt lên khi cuộn tới
 function initScrollReveal() {
-  const targets = document.querySelectorAll(".reveal");
+  const targets = document.querySelectorAll(".reveal:not(.reveal-observed)");
   if (!("IntersectionObserver" in window)) {
     targets.forEach(t => t.classList.add("visible"));
     return;
@@ -67,7 +116,10 @@ function initScrollReveal() {
     },
     { threshold: 0.15, rootMargin: "0px 0px -60px 0px" }
   );
-  targets.forEach(t => observer.observe(t));
+  targets.forEach(t => {
+    t.classList.add("reveal-observed");
+    observer.observe(t);
+  });
 }
 initScrollReveal();
 
