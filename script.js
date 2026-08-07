@@ -1,5 +1,5 @@
 // Dán link nhúng Google Form vào đây (Form > Gửi > biểu tượng </> > copy URL trong thuộc tính src)
-const GOOGLE_FORM_EMBED_URL = "";
+const GOOGLE_FORM_EMBED_URL = "https://docs.google.com/forms/d/e/1FAIpQLScqLaXIro9dKbSSDraaNrq91BGDldB-FvCBVZL8wqvZakyaNg/viewform?embedded=true";
 
 function renderCalendar() {
   const year = 2025;
