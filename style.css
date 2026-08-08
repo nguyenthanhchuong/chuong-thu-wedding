@@ -298,16 +298,102 @@ body {
   overflow: hidden;
   min-height: 60px;
 }
-.rsvp-placeholder {
-  padding: 24px 16px;
-  font-size: 13px;
-  color: #a08a72;
+#rsvp-form {
+  padding: 22px 18px;
+  text-align: left;
 }
-#rsvp-form-container iframe {
-  width: 100%;
-  min-height: 720px;
-  border: none;
+.field { margin-bottom: 16px; }
+.field label,
+.field .field-label {
   display: block;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: #6b4c3a;
+  margin-bottom: 6px;
+}
+.field input[type="text"],
+.field input[type="tel"],
+.field textarea {
+  width: 100%;
+  font-family: inherit;
+  font-size: 14px;
+  color: #4a382c;
+  background: #fdfbf5;
+  border: 1px solid #e0cfae;
+  border-radius: 8px;
+  padding: 10px 12px;
+  transition: border-color 0.2s ease;
+}
+.field input::placeholder,
+.field textarea::placeholder { color: #c3b49f; }
+.field input:focus,
+.field textarea:focus {
+  outline: none;
+  border-color: #b0392f;
+}
+.field textarea { resize: vertical; min-height: 76px; }
+
+.choice-group { display: flex; gap: 8px; }
+.choice { flex: 1; cursor: pointer; position: relative; }
+.choice input { position: absolute; opacity: 0; pointer-events: none; }
+.choice span {
+  display: block;
+  text-align: center;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: #8a6b4f;
+  background: #fdfbf5;
+  border: 1px solid #e0cfae;
+  border-radius: 8px;
+  padding: 10px 6px;
+  transition: all 0.2s ease;
+}
+.choice input:checked + span {
+  background: #b0392f;
+  border-color: #b0392f;
+  color: #fff;
+}
+.choice input:focus-visible + span { border-color: #b0392f; }
+
+.form-error {
+  font-size: 12px;
+  color: #b0392f;
+  margin-bottom: 10px;
+}
+.btn-submit {
+  width: 100%;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: #fff;
+  background: #b0392f;
+  border: none;
+  border-radius: 22px;
+  padding: 13px;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+}
+.btn-submit:hover { opacity: 0.9; }
+.btn-submit:disabled { opacity: 0.55; cursor: default; }
+
+.rsvp-done { padding: 40px 24px; }
+.done-mark {
+  font-size: 30px;
+  color: #b0392f;
+  margin-bottom: 10px;
+}
+.done-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 20px;
+  font-weight: 600;
+  color: #b0392f;
+  margin-bottom: 6px;
+}
+.done-text {
+  font-size: 13px;
+  color: #8a6b4f;
+  line-height: 1.6;
 }
 
 .gallery .divider span { font-size: 15px; }

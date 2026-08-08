@@ -1,5 +1,16 @@
-// Dán link nhúng Google Form vào đây (Form > Gửi > biểu tượng </> > copy URL trong thuộc tính src)
-const GOOGLE_FORM_EMBED_URL = "https://docs.google.com/forms/d/e/1FAIpQLScqLaXIro9dKbSSDraaNrq91BGDldB-FvCBVZL8wqvZakyaNg/viewform?embedded=true";
+// Form xác nhận tham dự gửi thẳng vào Google Form (dữ liệu về Google Sheet
+// đã liên kết với form). Mã entry.* lấy từ chính form nên khớp đúng cột.
+const GOOGLE_FORM_ID = "1FAIpQLScqLaXIro9dKbSSDraaNrq91BGDldB-FvCBVZL8wqvZakyaNg";
+const GOOGLE_FORM_ACTION =
+  `https://docs.google.com/forms/d/e/${GOOGLE_FORM_ID}/formResponse`;
+const GOOGLE_FORM_FIELDS = {
+  name:     "entry.1158457171", // Tên của bạn là?
+  relation: "entry.1931329361", // Bạn là gì của Dâu Rể nhỉ?
+  wish:     "entry.46441727",   // Gửi lời chúc đến Dâu Rể nhé!
+  attend:   "entry.1289465958", // Bạn có tham dự không?
+  phone:    "entry.1096943310", // Số điện thoại của bạn là?
+  area:     "entry.553226459"   // Bạn ở quận mấy nhỉ?
+};
 
 function renderCalendar() {
   const year = 2025;
@@ -35,15 +46,64 @@ function renderCalendar() {
   el.innerHTML = html;
 }
 
-function renderRsvpForm() {
-  const container = document.getElementById("rsvp-form-container");
-  if (!container) return;
+function initRsvpForm() {
+  const form = document.getElementById("rsvp-form");
+  const done = document.getElementById("rsvp-done");
+  const errorEl = document.getElementById("rsvp-error");
+  const submitBtn = document.getElementById("rsvp-submit");
+  if (!form || !done || !errorEl || !submitBtn) return;
 
-  if (!GOOGLE_FORM_EMBED_URL) {
-    return; // giữ nguyên placeholder trong index.html
-  }
+  const showError = message => {
+    errorEl.textContent = message;
+    errorEl.hidden = false;
+  };
 
-  container.innerHTML = `<iframe src="${GOOGLE_FORM_EMBED_URL}" loading="lazy">Đang tải…</iframe>`;
+  form.addEventListener("submit", async event => {
+    event.preventDefault();
+    errorEl.hidden = true;
+
+    const data = new FormData(form);
+    const values = {
+      name: (data.get("name") || "").trim(),
+      relation: (data.get("relation") || "").trim(),
+      wish: (data.get("wish") || "").trim(),
+      attend: data.get("attend") || "",
+      phone: (data.get("phone") || "").trim(),
+      area: (data.get("area") || "").trim()
+    };
+
+    if (!values.name)     return showError("Bạn cho tụi mình xin tên với nhé.");
+    if (!values.relation) return showError("Bạn là gì của Dâu Rể nhỉ?");
+    if (!values.wish)     return showError("Gửi Dâu Rể một lời chúc nha.");
+    if (!values.attend)   return showError("Bạn chọn giúp có tham dự được không nhé.");
+    if (!values.phone)    return showError("Bạn để lại số điện thoại giúp tụi mình nhé.");
+    if (!values.area)     return showError("Bạn đang ở khu vực nào vậy?");
+
+    const payload = new FormData();
+    Object.keys(GOOGLE_FORM_FIELDS).forEach(key => {
+      payload.append(GOOGLE_FORM_FIELDS[key], values[key]);
+    });
+
+    submitBtn.disabled = true;
+    submitBtn.textContent = "Đang gửi...";
+
+    try {
+      // Google chặn đọc phản hồi từ tên miền khác nên dùng no-cors:
+      // yêu cầu vẫn được ghi nhận, chỉ là không đọc được nội dung trả về.
+      await fetch(GOOGLE_FORM_ACTION, {
+        method: "POST",
+        mode: "no-cors",
+        body: payload
+      });
+      form.hidden = true;
+      done.hidden = false;
+      done.scrollIntoView({ behavior: "smooth", block: "center" });
+    } catch (err) {
+      submitBtn.disabled = false;
+      submitBtn.textContent = "Gửi Ngay";
+      showError("Gửi chưa được, bạn kiểm tra mạng rồi thử lại giúp nhé.");
+    }
+  });
 }
 
 // Thứ tự xếp xen kẽ: cặp ảnh dọc - ảnh ngang - cặp ảnh dọc ...
@@ -137,7 +197,7 @@ async function renderGallery() {
 }
 
 renderCalendar();
-renderRsvpForm();
+initRsvpForm();
 renderGallery();
 
 // Hiệu ứng: ảnh mờ dần + trượt lên khi cuộn tới

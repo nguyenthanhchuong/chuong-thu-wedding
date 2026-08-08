@@ -6,7 +6,7 @@
 <title>Thư Mời Cưới - Thành Chương & Anh Thư</title>
 <!-- ?v= là số phiên bản: tăng lên mỗi lần sửa CSS/JS để trình duyệt khách
      tải bản mới thay vì dùng lại bản cũ đã lưu trong bộ nhớ đệm -->
-<link rel="stylesheet" href="style.css?v=3">
+<link rel="stylesheet" href="style.css?v=4">
 </head>
 <body>
   <button id="music-toggle" class="music-toggle" aria-label="Bật/tắt nhạc nền" type="button">♪</button>
@@ -98,19 +98,64 @@
     <section class="section rsvp">
       <p class="rsvp-intro">Hãy dành ít phút để xác nhận tham dự và gửi lời chúc tới<br>cô dâu và chú rể ạ ^^</p>
 
-      <div class="rsvp-box">
+      <div class="rsvp-box" id="rsvp-box">
         <!--
-          Cấu hình: dán link nhúng Google Form vào biến GOOGLE_FORM_EMBED_URL
-          trong file script.js. Form nên có các câu hỏi theo đúng thứ tự:
-          1) Tên của bạn là?
-          2) Bạn là gì của Dâu Rể?
-          3) Gửi lời chúc đến Dâu Rể nhé!
-          4) Bạn Có Tham Dự Không? (Có thể tham dự / Không thể tham dự)
-          5) Số điện thoại của bạn là?
-          6) Bạn ở quận mấy nhỉ?
+          Form gửi thẳng vào Google Form của cô dâu chú rể, dữ liệu chảy về
+          Google Sheet đã liên kết. Mã trường (entry.*) khai trong script.js.
         -->
-        <div id="rsvp-form-container">
-          <p class="rsvp-placeholder">Form xác nhận tham dự sẽ hiển thị ở đây.</p>
+        <form id="rsvp-form" novalidate>
+          <div class="field">
+            <label for="rsvp-name">Tên của bạn là?</label>
+            <input type="text" id="rsvp-name" name="name" required
+                   autocomplete="name" placeholder="Nguyễn Văn A">
+          </div>
+
+          <div class="field">
+            <label for="rsvp-relation">Bạn là gì của Dâu Rể nhỉ?</label>
+            <input type="text" id="rsvp-relation" name="relation" required
+                   placeholder="Bạn thân chú rể">
+          </div>
+
+          <div class="field">
+            <label for="rsvp-wish">Gửi lời chúc đến Dâu Rể nhé!</label>
+            <textarea id="rsvp-wish" name="wish" rows="3" required
+                      placeholder="Chúc hai bạn trăm năm hạnh phúc..."></textarea>
+          </div>
+
+          <div class="field">
+            <span class="field-label">Bạn có tham dự không?</span>
+            <div class="choice-group">
+              <label class="choice">
+                <input type="radio" name="attend" value="Có thể tham dự" required>
+                <span>Có thể tham dự</span>
+              </label>
+              <label class="choice">
+                <input type="radio" name="attend" value="Không thể tham dự">
+                <span>Không thể tham dự</span>
+              </label>
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="rsvp-phone">Số điện thoại của bạn là?</label>
+            <input type="tel" id="rsvp-phone" name="phone" required
+                   inputmode="tel" autocomplete="tel" placeholder="0901234567">
+          </div>
+
+          <div class="field">
+            <label for="rsvp-area">Bạn ở quận mấy nhỉ?</label>
+            <input type="text" id="rsvp-area" name="area" required
+                   placeholder="Quận 1, TP.HCM">
+          </div>
+
+          <p class="form-error" id="rsvp-error" hidden></p>
+          <button type="submit" class="btn-submit" id="rsvp-submit">Gửi Ngay</button>
+        </form>
+
+        <div class="rsvp-done" id="rsvp-done" hidden>
+          <div class="done-mark">♡</div>
+          <p class="done-title">Đã nhận được rồi nhé!</p>
+          <p class="done-text">Cảm ơn bạn đã gửi lời chúc tới tụi mình ^^</p>
         </div>
       </div>
     </section>
@@ -135,6 +180,6 @@
   </div>
 
 <script src="https://www.youtube.com/iframe_api"></script>
-<script src="script.js?v=3"></script>
+<script src="script.js?v=4"></script>
 </body>
 </html>
